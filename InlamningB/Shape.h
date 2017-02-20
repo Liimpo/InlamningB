@@ -9,16 +9,16 @@ using namespace std;
 class Shape
 {
 private:
-	double volume;
 	double height;
+	//double volume;
 public:
-	//Konstruktor med defaultvärden.
+	//Konstruktor med defaultvï¿½rden.
 	Shape(double height = 0);
 	//Copy Konstruktor
 	Shape(const Shape &origObj);
 	//Dekonstruktor
 	virtual ~Shape();
-	void setVolume();
+//	void setVolume();
 	double getVolume()const;
 	virtual double volumeCalc()const = 0;
 	double getHeight()const;

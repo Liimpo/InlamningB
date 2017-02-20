@@ -4,7 +4,7 @@
 
 Shape::Shape(double height)
 {
-	this->volume = 0;
+	//this->volume = 0;
 	this->height = height;
 }
 
@@ -12,7 +12,7 @@ Shape::Shape(double height)
 
 Shape::Shape(const Shape &origObj)
 {
-	this->volume = origObj.volume;
+	//this->volume = origObj.volume;
 	this->height = origObj.height;
 }
 
@@ -21,14 +21,14 @@ Shape::~Shape()
 
 }
 
-void Shape::setVolume()
+/*void Shape::setVolume()
 {
 	this->volume = this->volumeCalc();
 }
-
+*/
 double Shape::getVolume()const
 {
-	return this->volume;
+	return this->volumeCalc();
 }
 
 void Shape::setHeight(double height)
@@ -48,14 +48,14 @@ string Shape::toString()const
 	text += "\nHeight: ";
 	text += to_string(this->height);
 	text += "\nVolume: ";
-	text += to_string(this->volume);
+	text += to_string(this->volumeCalc());
 	text += "\n";
 	return text;
 }
 
 Shape& Shape::operator=(const Shape &origObj)
 {
-	this->volume = origObj.volume;
+	//this->volume = origObj.volume;
 	this->height = origObj.height;
 	return *this;
 }

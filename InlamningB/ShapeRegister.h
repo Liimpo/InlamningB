@@ -7,12 +7,10 @@
 class ShapeRegister
 {
 private:
-	//Titel, blir lite roligare om man vill använda sig utav flera register.
+	//Titel, blir lite roligare om man vill anvï¿½nda sig utav flera register.
 	string title;
 	int capacity;
-	int nrOfShapes;
-	int nrOfCones;
-	int nrOfBoxes;
+	int shapesInReg;
 	Shape* *shapes;
 
 	void initiate(int from = 0);
@@ -26,13 +24,14 @@ public:
 	//Add-Remove funktioner
 	bool addCone(double height, double radius);
 	bool addBox(double height, double length, double width);
-	//Funktioner som kollar efter unik höjd
+	bool editACone(double height, double radius);
+	//Funktioner som kollar efter unik hï¿½jd
 	int shapeSearch(double height)const;
 	bool shapeExists(double height)const;
 	//Get-funktioner
-	int getNrOfShapes()const;
-	int getNrOfCones()const;
-	int getNrOfBoxes()const;
+	int nrOfShapes()const;
+	int nrOfCones()const;
+	int nrOfBoxes()const;
 	//Print funktion
 	bool getAllShapesAsStrings(string arr[], int capOfArr)const;
 	bool getAllConesAsStrings(string arr[], int capOfArr)const;

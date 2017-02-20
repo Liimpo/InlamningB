@@ -5,9 +5,7 @@ ShapeRegister::ShapeRegister(string title)
 {
 	this->title = title;
 	this->capacity = 3;
-	this->nrOfShapes = 0;
-	this->nrOfCones = 0;
-	this->nrOfBoxes = 0;
+	this->shapesInReg = 0;
 	this->shapes = new Shape*[this->capacity];
 	this->initiate(0);
 }
@@ -22,7 +20,7 @@ void ShapeRegister::expand()
 	this->capacity *= 2;
 	Shape* *temp = new Shape*[this->capacity];
 
-	for (int i = 0; i < this->nrOfShapes; i++)
+	for (int i = 0; i < this->shapesInReg; i++)
 	{
 		temp[i] = this->shapes[i];
 	}
@@ -30,12 +28,12 @@ void ShapeRegister::expand()
 	delete[] this->shapes;
 	this->shapes = temp;
 
-	this->initiate(this->nrOfShapes);
+	this->initiate(this->shapesInReg);
 }
 
 void ShapeRegister::freeMemory()
 {
-	for (int i = 0; i < this->nrOfShapes; i++)
+	for (int i = 0; i < this->shapesInReg; i++)
 	{
 		delete this->shapes[i];
 	}
@@ -54,8 +52,8 @@ int ShapeRegister::shapeSearch(double height)const
 {
 	int index = -1;
 	bool found = false;
-	
-	for (int i = 0; i < this->nrOfShapes; i++)
+
+	for (int i = 0; i < this->shapesInReg; i++)
 	{
 		if (this->shapes[i]->getHeight() == height && !found)
 		{
@@ -82,18 +80,16 @@ bool ShapeRegister::addBox(double height, double length, double width)
 	shapeIsFound = this->shapeExists(height);
 	if (!shapeIsFound)
 	{
-		if (this->nrOfShapes >= this->capacity)
+		if (this->shapesInReg >= this->capacity)
 		{
 			this->expand();
-			this->shapes[this->nrOfShapes] = new Box(height, length, width);
-			this->shapes[this->nrOfShapes++]->setVolume();
-			this->nrOfBoxes++;
+			this->shapes[this->shapesInReg++] = new Box(height, length, width);
+		//	this->shapes[this->shapesInReg++]->setVolume();
 		}
 		else
 		{
-			this->shapes[this->nrOfShapes] = new Box(height, length, width);
-			this->shapes[this->nrOfShapes++]->setVolume();
-			this->nrOfBoxes++;
+			this->shapes[this->shapesInReg++] = new Box(height, length, width);
+			//this->shapes[this->shapesInReg++]->setVolume();
 		}
 
 	}
@@ -106,43 +102,46 @@ bool ShapeRegister::addCone(double height, double radius)
 	shapeIsFound = this->shapeExists(height);
 	if (!shapeIsFound)
 	{
-		if (this->nrOfShapes >= this->capacity)
+		if (this->shapesInReg >= this->capacity)
 		{
 			this->expand();
-			this->shapes[this->nrOfShapes] = new Cone(height, radius);
-			this->shapes[this->nrOfShapes++]->setVolume();
-			this->nrOfCones++;
+			this->shapes[this->shapesInReg++] = new Cone(height, radius);
 		}
 		else
 		{
-			this->shapes[this->nrOfShapes] = new Cone(height, radius);
-			this->shapes[this->nrOfShapes++]->setVolume();
-			this->nrOfCones++;
+			this->shapes[this->shapesInReg++] = new Cone(height, radius);
 		}
 	}
 	return shapeIsFound;
 }
 
-int ShapeRegister::getNrOfShapes()const
+bool ShapeRegister::editACone(double height, double radius)
 {
-	return this->nrOfShapes;
+	bool coneIsEdited = false;
+	int conePos = this->shapeSearch(height);
+
+	Cone* conePtr = nullptr;
+	conePtr = dynamic_cast<Cone*>(this->shapes[conePos]);
+
+	if (conePtr != nullptr && conePtr->getRadius() == radius)
+	{
+		cout << "yo" << endl;
+	}
+	
+	cout << conePos << endl;
+	return coneIsEdited;
 }
 
-int ShapeRegister::getNrOfCones()const
+int ShapeRegister::nrOfShapes()const
 {
-	return this->nrOfCones;
-}
-
-int ShapeRegister::getNrOfBoxes()const
-{
-	return this->nrOfBoxes;
+	return this->shapesInReg;
 }
 
 bool ShapeRegister::getAllShapesAsStrings(string arr[], int capOfArr)const
 {
 	bool shapesExists = false;
 	int cnt = 0;
-	while (cnt < this->nrOfShapes && cnt < capOfArr)
+	while (cnt < this->shapesInReg && cnt < capOfArr)
 	{
 		arr[cnt] = this->shapes[cnt]->toString();
 		cnt++;
@@ -157,7 +156,7 @@ bool ShapeRegister::getAllConesAsStrings(string arr[], int capOfArr)const
 	bool conesExists = false;
 	int cnt = 0;
 	Cone* conePtr;
-	for (int i = 0; i < this->nrOfShapes && cnt < capOfArr; i++)
+	for (int i = 0; i < this->shapesInReg && capOfArr >= this->nrOfCones() && cnt < this->nrOfCones(); i++)
 	{
 		conePtr = nullptr;
 		conePtr = dynamic_cast<Cone*>(this->shapes[i]);
@@ -177,9 +176,8 @@ bool ShapeRegister::getAllBoxesAsStrings(string arr[], int capOfArr)const
 	bool boxesExists = false;
 	int cnt = 0;
 	Box* boxPtr;
-	for (int i = 0; i < this->nrOfShapes && capOfArr >= this->nrOfBoxes; i++)
+	for (int i = 0; i < this->shapesInReg && capOfArr >= this->nrOfBoxes(); i++)
 	{
-		cout << cnt << endl;
 		boxPtr = nullptr;
 		boxPtr = dynamic_cast<Box*>(this->shapes[i]);
 		if (boxPtr != nullptr)
@@ -190,4 +188,40 @@ bool ShapeRegister::getAllBoxesAsStrings(string arr[], int capOfArr)const
 		}
 	}
 	return boxesExists;
+}
+
+int ShapeRegister::nrOfBoxes()const
+{
+	int boxesCnt = 0;
+	//Sätter en box pointer
+	Box* boxPtr;
+
+	for (int i = 0; i < this->shapesInReg; i++)
+	{
+		boxPtr = nullptr;
+		boxPtr = dynamic_cast<Box*>(this->shapes[i]);
+		if (boxPtr != nullptr)
+		{
+			boxesCnt++;
+		}
+	}
+	return boxesCnt;
+}
+
+int ShapeRegister::nrOfCones()const
+{
+	int conesCnt = 0;
+
+	Cone* conePtr;
+
+	for (int i = 0; i < this->shapesInReg; i++)
+	{
+		conePtr = nullptr;
+		conePtr = dynamic_cast<Cone*>(this->shapes[i]);
+		if (conePtr != nullptr)
+		{
+			conesCnt++;
+		}
+	}
+	return conesCnt;
 }
