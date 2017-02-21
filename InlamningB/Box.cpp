@@ -12,13 +12,6 @@ Box::~Box()
 
 }
 
-Box::Box(const Box &origObj)
-	:Shape(origObj)
-{
-	this->length = origObj.length;
-	this->width = origObj.width;
-}
-
 double Box::volumeCalc()const
 {
 	return (this->length * this->width * Shape::getHeight());
@@ -53,22 +46,4 @@ double Box::getLength()const
 double Box::getWidth()const
 {
 	return this->width;
-}
-
-Box& Box::operator=(const Box &origObj)
-{
-	Shape::operator=(origObj);
-	this->length = origObj.length;
-	this->width = origObj.width;
-	return *this;
-}
-
-bool Box::operator==(const Box &origObj)
-{
-	bool equals = false;
-
-	if (this->length == origObj.length && this->width == origObj.width)
-		equals = true;
-
-	return equals;
 }

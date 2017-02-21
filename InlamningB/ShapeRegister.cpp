@@ -15,6 +15,38 @@ ShapeRegister::~ShapeRegister()
 	this->freeMemory();
 }
 
+void ShapeRegister::copySetup(const ShapeRegister &origObj)
+{
+	Cone* conePtr = nullptr;
+	Box* boxPtr = nullptr;
+	for (int i = 0; i < origObj.shapesInReg; i++)
+	{
+		conePtr = dynamic_cast<Cone*>(origObj.shapes[i]);
+		if (conePtr != nullptr)
+		{
+			this->shapes[i] = new Cone(*conePtr);
+		}
+		else
+		{
+			boxPtr = dynamic_cast<Box*>(origObj.shapes[i]);
+			if (boxPtr != nullptr)
+			{
+				this->shapes[i] = new Box(*boxPtr);
+			}
+		}
+	}
+}
+
+ShapeRegister::ShapeRegister(const ShapeRegister &origObj)
+{
+	this->title = origObj.title;
+	this->capacity = origObj.capacity;
+	this->shapesInReg = origObj.shapesInReg;
+	this->shapes = new Shape*[origObj.capacity];
+
+	this->copySetup(origObj);
+}
+
 void ShapeRegister::expand()
 {
 	this->capacity *= 2;
@@ -74,6 +106,19 @@ bool ShapeRegister::shapeExists(double height)const
 	return found;
 }
 
+bool ShapeRegister::removeShape(double height)
+{
+		bool isRemoved = false;
+		int shapePos = this->shapeSearch(height);
+		if (shapePos > - 1)
+		{
+			delete this->shapes[shapePos];
+			this->shapes[shapePos] = this->shapes[--this->shapesInReg];
+			isRemoved = true;
+		}
+		return isRemoved;
+}
+
 bool ShapeRegister::addBox(double height, double length, double width)
 {
 	bool shapeIsFound = false;
@@ -118,18 +163,38 @@ bool ShapeRegister::addCone(double height, double radius)
 bool ShapeRegister::editACone(double height, double radius)
 {
 	bool coneIsEdited = false;
-	int conePos = this->shapeSearch(height);
-
-	Cone* conePtr = nullptr;
-	conePtr = dynamic_cast<Cone*>(this->shapes[conePos]);
-
-	if (conePtr != nullptr && conePtr->getRadius() == radius)
+	if (this->nrOfCones() != 0)
 	{
-		cout << "yo" << endl;
+		int conePos = this->shapeSearch(height);
+
+		Cone* conePtr = nullptr;
+		conePtr = dynamic_cast<Cone*>(this->shapes[conePos]);
+
+		if (conePtr != nullptr)
+		{
+			conePtr->setRadius(radius);
+			coneIsEdited = true;
+		}
 	}
-	
-	cout << conePos << endl;
 	return coneIsEdited;
+}
+
+bool ShapeRegister::editABox(double height, double length, double width)
+{
+	bool boxIsEdited = false;
+	if (this->nrOfBoxes() != 0)
+	{
+		int boxPos = this->shapeSearch(height);
+		Box* boxPtr = nullptr;
+		boxPtr = dynamic_cast<Box*>(this->shapes[boxPos]);
+		if (boxPtr != nullptr)
+		{
+			boxPtr->setLength(length);
+			boxPtr->setWidth(width);
+			boxIsEdited = true;
+		}
+	}
+	return boxIsEdited;
 }
 
 int ShapeRegister::nrOfShapes()const
@@ -224,4 +289,23 @@ int ShapeRegister::nrOfCones()const
 		}
 	}
 	return conesCnt;
+}
+
+ShapeRegister ShapeRegister::operator=(const ShapeRegister &origObj)
+{
+	if (this != &origObj)
+	{
+		this->freeMemory();
+		this->title = origObj.title;
+		this->capacity = origObj.capacity;
+		this->shapesInReg = origObj.shapesInReg;
+		this->shapes = new Shape*[origObj.capacity];
+		this->copySetup(origObj);
+	}
+	return *this;
+}
+
+string ShapeRegister::getTitle()const
+{
+	return this->title;
 }

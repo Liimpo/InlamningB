@@ -11,8 +11,6 @@ private:
 public:
 	//Konstruktor
 	Box(double height = 0, double length = 0, double width = 0);
-	//Copy-Konstruktor
-	Box(const Box &origObj);
 	//Dekonstruktor
 	virtual ~Box();
 
@@ -23,10 +21,6 @@ public:
 	void setWidth(double width);
 	double getLength()const;
 	double getWidth()const;
-
-	//Operatorer
-	Box& operator=(const Box &origObj);
-	bool operator==(const Box &origObj);
 
 };
 #endif

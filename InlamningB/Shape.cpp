@@ -4,16 +4,7 @@
 
 Shape::Shape(double height)
 {
-	//this->volume = 0;
 	this->height = height;
-}
-
-//Copy Konstruktor
-
-Shape::Shape(const Shape &origObj)
-{
-	//this->volume = origObj.volume;
-	this->height = origObj.height;
 }
 
 Shape::~Shape()
@@ -21,11 +12,7 @@ Shape::~Shape()
 
 }
 
-/*void Shape::setVolume()
-{
-	this->volume = this->volumeCalc();
-}
-*/
+
 double Shape::getVolume()const
 {
 	return this->volumeCalc();
@@ -51,20 +38,4 @@ string Shape::toString()const
 	text += to_string(this->volumeCalc());
 	text += "\n";
 	return text;
-}
-
-Shape& Shape::operator=(const Shape &origObj)
-{
-	//this->volume = origObj.volume;
-	this->height = origObj.height;
-	return *this;
-}
-
-bool Shape::operator==(const Shape &origObj)
-{
-	bool equals = false;
-
-	if (this->height == origObj.height)
-		equals = true;
-	return equals;
 }

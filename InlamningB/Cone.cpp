@@ -6,11 +6,6 @@ Cone::Cone(double height, double radius)
 	this->radius = radius;
 }
 
-Cone::Cone(const Cone &origObj):Shape(origObj)
-{
-	this->radius = origObj.radius;
-}
-
 Cone::~Cone()
 {
 
@@ -38,21 +33,4 @@ string Cone::toStringSpec()const
 	text += "Radius: ";
 	text += to_string(this->radius);
 	return text;
-}
-
-Cone& Cone::operator=(const Cone &origObj)
-{
-	Shape::operator=(origObj);
-	this->radius = origObj.radius;
-	return *this;
-}
-
-bool Cone::operator==(const Cone &origObj)
-{
-	bool equals = false;;
-
-	if (this->radius == origObj.radius)
-		equals = true;
-
-	return equals;
 }

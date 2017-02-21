@@ -9,8 +9,6 @@ private:
 public:
 	//Konstruktor
 	Cone(double height = 0, double radius = 0);
-	//Copy Konstruktor
-	Cone(const Cone &origObj);
 	//Dekonstruktor
 	virtual ~Cone();
 	//Funktioner
@@ -20,10 +18,6 @@ public:
 
 	//To-string
 	string toStringSpec()const;
-
-	//Operatorer
-	Cone& operator=(const Cone &origObj);
-	bool operator==(const Cone &origObj);
 };
 
 #endif
